@@ -1,0 +1,51 @@
+становимся пользователем root
+скачиваю устанавливаю lxd и lxc, тк установил новую Ubuntu
+создаю 2 контейнера, запускаю (скрин 1 и 2)
+создаю рса ключ
+-----------------------------1)
+sudo su
+sudo apt install lxd
+lxd init
+lxc init
+lxc init ubuntu:20.04 oleg1
+lxc init ubuntu:20.04 oleg2
+lxc start oleg1
+lxc start oleg2
+lxc list
+ssh-keygen
+----------------------------2)
+Далее заходим внутрь контейнера 1
+Переходим в файл ssh_config
+Меняем PermitRootLogin prohibit-password на PermitRootLogin yes
+И также PasswordAuthentication no на PasswordAuthentication yes
+убираем " # " перед командами , тем самым строчка становится командой , а не коментарием
+выходим из контейнера
+---------------------------2)
+lxc exec oleg1 /bin/bash
+cd /etc/ssh
+nano sshd_config
+systemctl restart ssh*.service
+passwd root
+exit
+----------------------------3)
+тоже самое проделываем с контейнером 2 
+---------------------------3)
+lxc exec dz2 /bin/bash
+cd /etc/ssh
+nano sshd_config
+systemctl restart ssh*.service
+passwd root
+exit
+-----------------------------4)
+кидаем ключи на контейнеры, теперь система не просит пароль
+----------------------------4)
+ssh-copy-id root@10.112.149.206
+ssh-copy-id root@10.112.149.242
+----------------------------5)
+заходим на контейнер 1 создаем ключ в нем и кидаем его в контейнер 2
+переходим в контейнер 2, все работает (скрин 3)
+----------------------------5)
+ssh root@10.112.149.206
+ssh-keygen
+ssh-copy-id root@10.112.149.242
+ssh root@10.112.149.242
